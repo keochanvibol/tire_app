@@ -135,6 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 .whenComplete(() {
               print('insert sucess');
               _onRefresh();
+              controllerName.clear();
             });
           },
           child: const Text('Add')),
