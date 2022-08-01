@@ -34,10 +34,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<List<User>> getList() async {
     return await db.getUser();
   }
+  Future<void> _onRefresh() async {
+    setState(() {
+      listuser = db.getUser();
+    });
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _onRefresh();
     db = ConnectionDB();
     db.initializeDB().whenComplete(() {
       setState(() {
@@ -45,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
         print(listuser!.then((value) => value.first.name.toString()));
       });
     });
+    
   }
   @override
   Widget build(BuildContext context) {
@@ -67,8 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
+            SizedBox(height: 20,),
             Container(
-              height: 400,
+              height: 600,
               width: double.infinity,
               child: FutureBuilder(
                 future: listuser,
@@ -82,8 +90,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     itemCount: snapshoot.data!.length,
                     itemBuilder: (context, index){
                       var item = snapshoot.data![index];
-                      return ListTile(
-                        title: Text(item.name),
+                      return InkWell(
+                        onLongPress: () async {
+                          await ConnectionDB().deleteUser(item.id).whenComplete(() {
+                            setState(() {
+                              print('Delect Sucess');
+                            });
+                          });
+                        },
+                        child: ListTile(
+                          title: Text(item.name),
+                        ),
                       );
                     },
                     ); 
