@@ -16,8 +16,8 @@ class ConnectionDB {
     String part = await getDatabasesPath();
     return openDatabase(
       join(part, 'tododatabase.db'),
-      onCreate: (database, version) async {
-        await database.execute(
+      onCreate: (db, version) async {
+        await db.execute(
           'CREATE TABLE $table(id INTEGER PRIMARY KEY, name TEXT)',
         );
       },
@@ -27,14 +27,15 @@ class ConnectionDB {
 
   Future<void> insertUser(User user) async {
     final db = await initializeDB();
-    await db.insert(table, user.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert(table, user.toMap());
+    //  conflictAlgorithm: ConflictAlgorithm.replace);
     print('Function Insert');
   }
 
   Future<List<User>> getUser() async {
     final db = await initializeDB();
-    final List<Map<String, dynamic>> queryResult = await db.query(table);
+    List<Map<String, dynamic>> queryResult = await db.query(table);
+    print('getUser');
     return queryResult.map((e) => User.fromMap(e)).toList();
     //queryResult.map((e) => todo.fromMap(e)).toList();
   }
