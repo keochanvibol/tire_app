@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:sqlite_input/connection.dart';
 import 'package:sqlite_input/datauser.dart';
@@ -67,13 +69,34 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Container(
               height: 400,
-
+              width: double.infinity,
+              child: FutureBuilder(
+                future: listuser,
+                builder: (context, AsyncSnapshot<List<User>> snapshoot){
+                  if(snapshoot.connectionState == ConnectionState.waiting){
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }return snapshoot.hasError? const Center(child: Icon(Icons.info,color: Colors.red,),)
+                  : ListView.builder(
+                    itemCount: snapshoot.data!.length,
+                    itemBuilder: (context, index){
+                      var item = snapshoot.data![index];
+                      return ListTile(
+                        title: Text(item.name),
+                      );
+                    },
+                    ); 
+                },),
             ),
           ],
         ),
       ),
     floatingActionButton: FloatingActionButton(
-      onPressed: (){},child: const Text('Add')),
+      onPressed: () async {
+        await ConnectionDB().insertUser(User(id: Random().nextInt(100), 
+          name: controllerName.text.trim())).whenComplete(() {print('insert sucess');});
+      },child: const Text('Add')),
     );
   }
 }
