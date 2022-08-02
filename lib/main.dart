@@ -82,29 +82,31 @@ class _MyHomePageState extends State<MyHomePage> {
                     )),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Container(
               height: 600,
               width: double.infinity,
               child: FutureBuilder(
-                future: listuser!,
+                future: listuser,
                 builder: (context, AsyncSnapshot<List<User>> snapshoot) {
                   if (snapshoot.connectionState == ConnectionState.waiting) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  }
-                  return snapshoot.hasError
-                      ? const Center(
+                  }else if(snapshoot.hasError){
+                    return 
+                      const Center(
                           child: Icon(
                             Icons.info,
                             color: Colors.red,
                           ),
-                        )
-                      : ListView.builder(
-                          itemCount: snapshoot.data!.length,
+                        );
+                  }else{final items = snapshoot.data ?? <User>[];
+                    return RefreshIndicator(onRefresh: _onRefresh,
+                      child: ListView.builder(
+                          itemCount: items.length,
                           itemBuilder: (context, index) {
                             var item = snapshoot.data![index];
                             return InkWell(
@@ -125,7 +127,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             );
                           },
-                        );
+                        ),
+                    );
+                  }           
                 },
               ),
             ),
