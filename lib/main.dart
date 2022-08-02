@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: controllerName,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return "Please Enter Password";
+                    return "Please Enter Name";
                   }
                   return null;
                 },
