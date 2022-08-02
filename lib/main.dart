@@ -69,6 +69,12 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
                 controller: controllerName,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Please Enter Password";
+                  }
+                  return null;
+                },
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                     border: OutlineInputBorder(
