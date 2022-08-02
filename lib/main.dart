@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 600,
               width: double.infinity,
               child: FutureBuilder(
-                future: listuser,
+                future: listuser!,
                 builder: (context, AsyncSnapshot<List<User>> snapshoot) {
                   if (snapshoot.connectionState == ConnectionState.waiting) {
                     return Center(
