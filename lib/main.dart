@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sqlite_input/connection.dart';
 import 'package:sqlite_input/datauser.dart';
+import 'package:sqlite_input/updateuser.dart';
 
 void main() {
   runApp(const MyApp());
@@ -95,41 +97,51 @@ class _MyHomePageState extends State<MyHomePage> {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  }else if(snapshoot.hasError){
-                    return 
-                      const Center(
-                          child: Icon(
-                            Icons.info,
-                            color: Colors.red,
-                          ),
-                        );
-                  }else{final items = snapshoot.data ?? <User>[];
-                    return RefreshIndicator(onRefresh: _onRefresh,
-                      child: ListView.builder(
-                          itemCount: items.length,
-                          itemBuilder: (context, index) {
-                            var item = snapshoot.data![index];
-                            return InkWell(
-                              onLongPress: () async {
-                                await ConnectionDB()
-                                    .deleteUser(item.id)
-                                    .whenComplete(() {
-                                  setState(() {
-                                    print('Delect Sucess');
-                                    _onRefresh();
-                                  });
-                                });
-                              },
-                              child: Card(
-                                child: ListTile(
-                                  title: Text(item.name),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                  } else if (snapshoot.hasError) {
+                    return const Center(
+                      child: Icon(
+                        Icons.info,
+                        color: Colors.red,
+                      ),
                     );
-                  }           
+                  } else {
+                    final items = snapshoot.data ?? <User>[];
+                    return RefreshIndicator(
+                      onRefresh: _onRefresh,
+                      child: ListView.builder(
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          var item = snapshoot.data![index];
+                          return InkWell(
+                            onTap: (() {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => UpdateUser(
+                                            id: items[index].id,
+                                            name: items[index].name,
+                                          )));
+                            }),
+                            onLongPress: () async {
+                              await ConnectionDB()
+                                  .deleteUser(item.id)
+                                  .whenComplete(() {
+                                setState(() {
+                                  print('Delect Sucess');
+                                  _onRefresh();
+                                });
+                              });
+                            },
+                            child: Card(
+                              child: ListTile(
+                                title: Text(item.name),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }
                 },
               ),
             ),
