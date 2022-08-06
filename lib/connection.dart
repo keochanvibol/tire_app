@@ -13,9 +13,9 @@ class ConnectionDB {
   Future<Database> initializeDB() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String appDocPath = appDocDir.path;
-    String part = await getDatabasesPath();
+    String path = await getDatabasesPath();
     return openDatabase(
-      join(part, 'tododatabase.db'),
+      join(path, 'tododatabase.db'),
       onCreate: (db, version) async {
         await db.execute(
           'CREATE TABLE $table(id INTEGER PRIMARY KEY, name TEXT)',
@@ -23,6 +23,13 @@ class ConnectionDB {
       },
       version: 1,
     );
+  }
+
+  Future<void> insertUser(User user) async {
+    final db = await initializeDB();
+    await db.insert(table, user.toMap());
+    //  conflictAlgorithm: ConflictAlgorithm.replace);
+    print('Function Insert');
   }
 
   Future<List<User>> getUser() async {
