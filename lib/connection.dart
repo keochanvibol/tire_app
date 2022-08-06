@@ -25,13 +25,6 @@ class ConnectionDB {
     );
   }
 
-  Future<void> insertUser(User user) async {
-    final db = await initializeDB();
-    await db.insert(table, user.toMap());
-    //  conflictAlgorithm: ConflictAlgorithm.replace);
-    print('Function Insert');
-  }
-
   Future<List<User>> getUser() async {
     final db = await initializeDB();
     List<Map<String, dynamic>> queryResult = await db.query(table);
